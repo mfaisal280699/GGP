@@ -34,29 +34,31 @@ class usercontroller extends Controller
             $newUser->save();
 
             // Login user yang baru dibuat
-            Auth::login($newUser);
-   
-           
+            return response()->json([
+                'success' => true,
+                'user'    => auth()->guard('api')->user($newUser),    
+                'token'   => $token   
+            ], 200);
 
-            
         }
 
       
 
         // Jika ada user langsung login saja
-        auth('web')->login($userFromDatabase);
-        session()->regenerate();
-
-        return redirect('/');
+         return response()->json([
+            'success' => true,
+            'user'    => auth()->guard('api')->user(),    
+            'token'   => $token   
+        ], 200);
+   
     }
 
     public function logout(Request $request)
     {
-        auth('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        auth()->logout();
+        return response()->json(['message => User successfully signed out']);
 
-        return redirect('/');
+       
     }
 
     public function login_manual(Request $request)
@@ -87,5 +89,41 @@ class usercontroller extends Controller
         ], 200);
     
 
+    }
+
+    public function register_manual(Request $request)
+    {
+
+
+$validator = Validator::make($request->all(), [
+            'name'      => 'required',
+            'email'     => 'required|email|unique:users',
+            'password'  => 'required|min:8|confirmed'
+        ]);
+
+ if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+
+      $user = User::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => bcrypt($request->password)
+        ]);
+
+
+   
+        if($user) {
+            return response()->json([
+                'success' => true,
+                'user'    => $user,  
+            ], 201);
+        }
+
+        //return JSON process insert failed 
+        return response()->json([
+            'success' => false,
+        ], 409);
     }
 }
