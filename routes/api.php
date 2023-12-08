@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\usercontroller;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,15 +38,15 @@ Route::post('logout', [usercontroller::class, 'logout']);
     // ->name('logout');
 
     // Untuk redirect ke Google (SIGN UP)
-Route::get('signup/google/redirect', [usercontroller::class, 'redirect']);
+// Route::get('signup/google/redirect', [usercontroller::class, 'redirect']);
 // ->middleware(['guest'])
 // ->name('redirect');
 
 // Untuk callback dari Google (SIGN UP)
-Route::get('signup/google/callback', [usercontroller::class, 'callback']);
+// Route::get('signup/google/callback', [usercontroller::class, 'callback']);
 // ->middleware(['guest'])
 // ->name('callback');
 
-Route::post('login_manual', [UsersController::class, 'login_manual']); 
-Route::post('register_manual', [UsersController::class, 'register_manual']);
+Route::post('login_manual', [usercontroller::class, 'login_manual']); 
+// Route::post('register_manual', [usercontroller::class, 'register_manual']);
 
